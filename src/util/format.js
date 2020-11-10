@@ -1,7 +1,7 @@
-const JSBI = require('jsbi');
 const Big = require('big.js');
 const lodash = require('lodash');
 const CONST = require('../CONST');
+const JSBI = require('./jsbi');
 const parser = require('./parser');
 const sign = require('./sign');
 
@@ -11,7 +11,7 @@ function toHex(value) {
 
   if (lodash.isString(value)) {
     hex = value.toLowerCase(); // XXX: lower case for support checksum address
-  } else if (Number.isInteger(value) || (value instanceof JSBI)) {
+  } else if (Number.isInteger(value) || (typeof value === 'bigint') || (value instanceof JSBI)) {
     hex = `0x${value.toString(16)}`;
   } else if (Buffer.isBuffer(value)) {
     hex = `0x${value.toString('hex')}`;
@@ -39,7 +39,7 @@ function toNumber(value) {
 }
 
 function toBigInt(value) {
-  if (Number.isInteger(value) || (value instanceof JSBI)) {
+  if (Number.isInteger(value) || (typeof value === 'bigint') || (value instanceof JSBI)) {
     return JSBI.BigInt(value);
   }
   if (lodash.isBoolean(value)) {
